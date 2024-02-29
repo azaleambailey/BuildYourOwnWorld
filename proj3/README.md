@@ -13,7 +13,7 @@ To play the game:
     3. type in a random seed (any sequence of numbers)
     4. press s (this takes you to the game)
 Within the game, the player can use a, w, d, s to move the gardener avatar and j, i, l, k to move the duck avatar.
-The gardener avatar is able to eat carrots. If the gardener avatar moves over a carrot, the gardener is taken to carrot world where they have the chance to eat the carrot. THey will be taken back to the original world after a set amount of time.
+The gardener avatar is able to eat carrots. If the gardener avatar moves over a carrot, the gardener is taken to carrot world where they have the chance to eat the carrot. They will be taken back to the original world after a set amount of time.
 The duck avatar is not able to go to carrot world.
 
 Additional Facts:
