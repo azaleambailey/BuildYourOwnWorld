@@ -1,2 +1,2 @@
 # BuildYourOwnWorld
-This was a class project where we were tasked with building a pseudo-randomly generated world based on the user's seed input.
+This was a partner class project offered by the Data Structures course at UC Berkeley.
