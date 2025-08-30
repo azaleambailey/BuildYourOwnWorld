@@ -3,49 +3,66 @@ package tileengine;
 import java.awt.Color;
 
 /**
- * Contains constant tile objects, to avoid having to remake the same tiles in different parts of
- * the code.
- *
- * You are free to (and encouraged to) create and add your own tiles to this file. This file will
- * be turned in with the rest of your code.
- *
- * Ex:
+ * Contains constant tile objects for the Build Your Own Garden game.
+ * 
+ * This file defines all the visual tiles used throughout the game world,
+ * including characters, colors, and image file paths. Each tile is designed
+ * to represent a specific game element with consistent visual properties.
+ * 
+ * You are free to (and encouraged to) create and add your own tiles to this file.
+ * This file will be turned in with the rest of your code.
+ * 
+ * Usage example:
  *      world[x][y] = Tileset.FLOOR;
- *
- * The style checker may crash when you try to style check this file due to use of unicode
- * characters. This is OK.
+ * 
+ * Note: The style checker may crash when you try to style check this file
+ * due to use of unicode characters. This is OK and expected behavior.
+ * 
+ * @author Azalea Bailey
+ * @version 1.0
  */
-
 public class Tileset {
+    
+    // Color constants for consistent theming
     public static final Color BROWN = new Color(154, 95, 53);
     public static final Color DARKGREEN = new Color(53, 69, 49);
+    
+    // Character avatars and entities
     public static final TETile AVATAR = new TETile('웃', Color.black, new Color(185, 118, 72), "you", "./src/tileengine/gardener.png");
     public static final TETile DUCK = new TETile('▲', new Color(224, 137, 7), new Color(235, 204, 66), "duck", "./src/tileengine/duck.png");
-    public static final TETile WALL = new TETile('#', new Color(216, 128, 128), Color.darkGray,
-            "wall");
-    public static final TETile FLOOR = new TETile('·', new Color(128, 192, 128), Color.black,
-            "floor");
+    
+    // Basic world structure tiles
+    public static final TETile WALL = new TETile('#', new Color(216, 128, 128), Color.darkGray, "wall");
+    public static final TETile FLOOR = new TETile('·', new Color(128, 192, 128), Color.black, "floor");
     public static final TETile NOTHING = new TETile(' ', Color.black, Color.black, "nothing");
+    
+    // Terrain and surface tiles
     public static final TETile DIRT = new TETile('.', new Color(117, 68, 43), new Color(185, 118, 72), "dirt");
     public static final TETile HALLDIRT = new TETile('.', new Color(117, 68, 43), new Color(185, 118, 72), "halldirt");
     public static final TETile WATER = new TETile('≈', Color.blue, Color.black, "water");
     public static final TETile FLOWER = new TETile('✽', new Color(243, 78, 182), new Color(34, 108, 10), "flower");
-    public static final TETile LOCKED_DOOR = new TETile('█', Color.orange, Color.black,
-            "locked door");
-    public static final TETile UNLOCKED_DOOR = new TETile('▢', Color.orange, Color.black,
-            "unlocked door");
+    
+    // Door and access tiles
+    public static final TETile LOCKED_DOOR = new TETile('█', Color.orange, Color.black, "locked door");
+    public static final TETile UNLOCKED_DOOR = new TETile('▢', Color.orange, Color.black, "unlocked door");
+    
+    // Additional terrain types
     public static final TETile SAND = new TETile('▒', Color.yellow, Color.black, "sand");
     public static final TETile GRASS = new TETile('"', new Color(39, 128, 45), new Color(140, 199, 94), "water");
+    
+    // Collectible and interactive items
     public static final TETile CARROT = new TETile('♠', new Color(232, 103, 16), new Color(34, 108, 10), "carrot", "./src/tileengine/carrot.png");
     public static final TETile TREE = new TETile('♠', Color.green, Color.black, "tree");
+    
+    // Table setting tiles for carrot world
     public static final TETile WHITE = new TETile('"', new Color(222, 209, 209), Color.white, "white");
     public static final TETile RED = new TETile('"', new Color(122, 27, 27), new Color(191, 65, 65), "red");
     public static final TETile LIGHTGRAY = new TETile(',', new Color(217, 210, 208), new Color(232, 228, 227), "lightgray");
     public static final TETile GRAY = new TETile(',', new Color(217, 210, 208), new Color(222, 218, 217), "gray");
     public static final TETile DARKGRAY = new TETile(',', new Color(112, 109, 110), new Color(112, 109, 110), "darkgray");
+    
+    // Picnic table accessories
     public static final TETile NAPKIN = new TETile('/', new Color(219, 213, 215), new Color(230, 223, 225), "white");
     public static final TETile ORANGE = new TETile('/', new Color(186, 116, 11), new Color(252, 152, 3), "orange");
     public static final TETile GREEN = new TETile('▒', new Color(15, 51, 10), new Color(26, 97, 16), "green");
-
-
 }

@@ -5,26 +5,60 @@ import tileengine.TETile;
 import tileengine.Tileset;
 
 import java.util.Random;
-public class AvatarMoves { //constructor
-    TETile[][] world; //2D array that stores the tiles that represent our world
-    TETile[][] carrotWorld; //2D array that stores the tiles that represent the carrot world
-    TETile prev; //previous tile that the gardener avatar was on
-    TETile prevDuck; //previous tile that the duck avatar was on
-    Coord avatarCoord; //x, y coordinate of the gardener avatar
-    Coord duckCoord; //x, y coordinate of the duck avatar
-    TETile avatar = Tileset.AVATAR; //tile that represents the gardener avatar
-    TETile duck = Tileset.DUCK; //tile that represents the duck avatar
-    TETile wall = Tileset.FLOWER; //tile that represents the walls in our world
-    TETile room = Tileset.DIRT; //tile that represents the rooms in our world
-    TETile hall = Tileset.HALLDIRT; //tile that represents the halls in our world
-    TETile outside = Tileset.GRASS; //tile that represents the outside in our world
-    TETile carrot = Tileset.CARROT; //tile that represents carrots in our world
-    long seed; //number that determines what seed our pseudo-randomly generated world is based on
-    int width; //width of our world
-    int height; //height of our world
-    Random rand; //our world's random number generator
 
-    //initializes our world
+/**
+ * Manages movement and positioning for both the gardener and duck avatars.
+ * 
+ * This class handles:
+ * - Avatar spawning in valid locations
+ * - Movement validation and collision detection
+ * - Coordinate tracking for both avatars
+ * - Loading saved avatar positions
+ * - Carrot interaction and removal
+ * 
+ * The movement system ensures avatars can only move on walkable tiles
+ * (dirt floors, hallways, and carrots) while preventing movement
+ * through walls and outside the world boundaries.
+ * 
+ * @author Azalea Bailey
+ * @version 1.0
+ */
+public class AvatarMoves {
+    
+    // World and rendering references
+    TETile[][] world;          // Main world tile array
+    TETile[][] carrotWorld;    // Carrot world tile array
+    
+    // Avatar state tracking
+    TETile prev;               // Previous tile the gardener avatar was on
+    TETile prevDuck;           // Previous tile the duck avatar was on
+    Coord avatarCoord;         // Current coordinates of the gardener avatar
+    Coord duckCoord;           // Current coordinates of the duck avatar
+    
+    // Tile type constants
+    TETile avatar = Tileset.AVATAR;    // Gardener avatar tile representation
+    TETile duck = Tileset.DUCK;        // Duck avatar tile representation
+    TETile wall = Tileset.FLOWER;      // Wall tiles (impassable)
+    TETile room = Tileset.DIRT;        // Room floor tiles (walkable)
+    TETile hall = Tileset.HALLDIRT;    // Hallway tiles (walkable)
+    TETile outside = Tileset.GRASS;    // Outside tiles (impassable)
+    TETile carrot = Tileset.CARROT;    // Carrot tiles (walkable and collectible)
+    
+    // World properties
+    long seed;                 // Random seed for deterministic positioning
+    int width;                 // World width in tiles
+    int height;                // World height in tiles
+    Random rand;               // Random number generator for positioning
+
+    /**
+     * Constructor that initializes the avatar movement system.
+     * 
+     * Sets up references to both worlds, initializes coordinate tracking,
+     * and prepares the random number generator for avatar spawning.
+     * 
+     * @param w The main world instance
+     * @param c The carrot world instance
+     */
     public AvatarMoves(World w, CarrotWorld c) {
         avatarCoord = new Coord(0, 0, 0);
         duckCoord = new Coord(0, 0, 0);
@@ -36,47 +70,79 @@ public class AvatarMoves { //constructor
         this.seed = w.seed;
     }
 
-    //handles gardener avatar and duck avatar moving logic
+    /**
+     * Spawns both avatars in valid locations within the world.
+     * 
+     * Places the gardener and duck avatars on walkable tiles (dirt floors
+     * or hallways) ensuring they don't spawn on walls or outside areas.
+     * The avatars are positioned at least one tile apart to prevent overlap.
+     */
     public void spawnAvatar() {
+        // Spawn gardener avatar in a valid location
         int x = rand.nextInt(width);
         int y = rand.nextInt(height);
+        
+        // Find a walkable location for the gardener
         while (world[x][y] == wall || world[x][y] == outside) {
             x = rand.nextInt(width);
             y = rand.nextInt(height);
         }
+        
+        // Place gardener avatar and store previous tile
         avatarCoord = new Coord(x * x + y * y, x, y);
         prev = world[x][y];
         world[x][y] = avatar;
 
+        // Spawn duck avatar in a different valid location
         int x1 = rand.nextInt(width);
         int y1 = rand.nextInt(height);
+        
+        // Ensure duck doesn't spawn on gardener or impassable tiles
         while (world[x1][y1] == wall || world[x1][y1] == outside || world[x1][y1] == avatar) {
             x1 = rand.nextInt(width);
             y1 = rand.nextInt(height);
         }
+        
+        // Place duck avatar and store previous tile
         duckCoord = new Coord(x1 * x1 + y1 * y1, x1, y1);
         prevDuck = world[x1][y1];
         world[x1][y1] = duck;
     }
 
-    //removes carrot from our world once the gardener avatar moves on the tile
+    /**
+     * Removes a carrot from the world when collected by the gardener.
+     * 
+     * Replaces the carrot tile with a dirt floor tile, effectively
+     * removing the collectible item from the world.
+     * 
+     * @param x X coordinate of the carrot to remove
+     * @param y Y coordinate of the carrot to remove
+     */
     public void removeCarrot(int x, int y) {
         world[x][y] = room;
     }
 
-    //loads avatars into our world after the game is saved
+    /**
+     * Loads avatar positions from a saved game file.
+     * 
+     * Reads the save.txt file and places both avatars at their
+     * previously saved coordinates. This method is called when
+     * loading a saved game to restore the exact game state.
+     */
     public void loadAvatar() {
         In file = new In("./save.txt");
 
         String currentLine = file.readLine();
         String[] splitLine = currentLine.split(",");
 
+        // Load gardener avatar position (indices 1 and 2)
         int avatarX = Integer.parseInt(splitLine[1]);
         int avatarY = Integer.parseInt(splitLine[2]);
         avatarCoord = new Coord(avatarX * avatarX + avatarY * avatarY, avatarX, avatarY);
         prev = world[avatarX][avatarY];
         world[avatarX][avatarY] = avatar;
 
+        // Load duck avatar position (indices 3 and 4)
         int duckX = Integer.parseInt(splitLine[3]);
         int duckY = Integer.parseInt(splitLine[4]);
         duckCoord = new Coord(duckX * duckX + duckY * duckY, duckX, duckY);
@@ -84,12 +150,30 @@ public class AvatarMoves { //constructor
         world[duckX][duckY] = duck;
     }
 
-    //checks if the gardener avatar can move onto a tile (can't move on a wall tile)
+    /**
+     * Validates whether an avatar can move to a specific tile.
+     * 
+     * Checks if the target tile is walkable:
+     * - Hallway floors (hall)
+     * - Room floors (room)
+     * - Carrots (carrot)
+     * 
+     * @param t The tile to check for movement validity
+     * @return true if the tile is walkable, false otherwise
+     */
     public boolean validMove(TETile t) {
         return t.equals(hall) || t.equals(room) || t.equals(carrot);
     }
 
-    //handles the moving gardener avatar up logic
+    /**
+     * Moves the gardener avatar upward (north).
+     * 
+     * Checks if the move is valid, then:
+     * 1. Places the avatar on the new tile
+     * 2. Restores the previous tile
+     * 3. Updates the avatar's coordinates
+     * 4. Stores the new previous tile
+     */
     public void avatarUp() {
         TETile temp = world[avatarCoord.x][avatarCoord.y + 1];
 
@@ -101,7 +185,12 @@ public class AvatarMoves { //constructor
         }
     }
 
-    //handles the moving gardener avatar down logic
+    /**
+     * Moves the gardener avatar downward (south).
+     * 
+     * Similar to avatarUp but moves in the negative Y direction.
+     * Implements the same movement validation and tile restoration logic.
+     */
     public void avatarDown() {
         TETile temp = world[avatarCoord.x][avatarCoord.y - 1];
 
@@ -113,7 +202,12 @@ public class AvatarMoves { //constructor
         }
     }
 
-    //handles the moving gardener avatar left logic
+    /**
+     * Moves the gardener avatar leftward (west).
+     * 
+     * Moves the avatar in the negative X direction.
+     * Implements the same movement validation and tile restoration logic.
+     */
     public void avatarLeft() {
         TETile temp = world[avatarCoord.x - 1][avatarCoord.y];
 
@@ -125,7 +219,12 @@ public class AvatarMoves { //constructor
         }
     }
 
-    //handles the moving gardener avatar right logic
+    /**
+     * Moves the gardener avatar rightward (east).
+     * 
+     * Moves the avatar in the positive X direction.
+     * Implements the same movement validation and tile restoration logic.
+     */
     public void avatarRight() {
         TETile temp = world[avatarCoord.x + 1][avatarCoord.y];
 
@@ -137,7 +236,13 @@ public class AvatarMoves { //constructor
         }
     }
 
-    //handles the moving duck avatar up logic
+    /**
+     * Moves the duck avatar upward (north).
+     * 
+     * Implements the same movement logic as the gardener avatar
+     * but for the duck character. The duck can move on the same
+     * walkable tiles as the gardener.
+     */
     public void duckUp() {
         TETile temp = world[duckCoord.x][duckCoord.y + 1];
 
@@ -149,7 +254,12 @@ public class AvatarMoves { //constructor
         }
     }
 
-    //handles the moving duck avatar left logic
+    /**
+     * Moves the duck avatar leftward (west).
+     * 
+     * Moves the duck avatar in the negative X direction.
+     * Implements the same movement validation and tile restoration logic.
+     */
     public void duckLeft() {
         TETile temp = world[duckCoord.x - 1][duckCoord.y];
 
@@ -161,7 +271,12 @@ public class AvatarMoves { //constructor
         }
     }
 
-    //handles the moving duck avatar down logic
+    /**
+     * Moves the duck avatar downward (south).
+     * 
+     * Moves the duck avatar in the negative Y direction.
+     * Implements the same movement validation and tile restoration logic.
+     */
     public void duckDown() {
         TETile temp = world[duckCoord.x][duckCoord.y - 1];
 
@@ -173,7 +288,12 @@ public class AvatarMoves { //constructor
         }
     }
 
-    //handles the moving duck avatar right logic
+    /**
+     * Moves the duck avatar rightward (east).
+     * 
+     * Moves the duck avatar in the positive X direction.
+     * Implements the same movement validation and tile restoration logic.
+     */
     public void duckRight() {
         TETile temp = world[duckCoord.x + 1][duckCoord.y];
 
