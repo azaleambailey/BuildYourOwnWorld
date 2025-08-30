@@ -1,5 +1,5 @@
 # BuildYourOwnWorld
-This was a partner class project offered by the Data Structures course at UC Berkeley. I focused on the valid pseudo-random room generation, constructing a room connecting algorithm, creating a second avatar, and transporting the gardener avatar to carrot world.
+This was a class project offered by the Data Structures course at UC Berkeley.
 
 ### Initial Menu Page
 <img width="503" alt="flower" src="https://github.com/azaleambailey/BuildYourOwnWorld/assets/110420935/569bc8d5-f0ca-4f98-9a49-246265f5b717">
